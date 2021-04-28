@@ -1,14 +1,17 @@
-const {createWrapper} = require("next-redux-wrapper");
-const {createStore} = require("redux");
+import { createWrapper } from "next-redux-wrapper";
+import pokemonSlice from "./reducers/pokemon";
 
+const { getDefaultMiddleware } = require("@reduxjs/toolkit");
+const { configureStore } = require("@reduxjs/toolkit");
+const makeStore = (context) =>
+  configureStore({
+    reducer: {
+      [pokemonSlice.name]: pokemonSlice.reducer,
+    },
+    devTools: process.env.NODE_ENV !== "production",
+    middleware: getDefaultMiddleware(),
+  });
 
-const configureStore = () => {
-    const store = createStore(reducer)
-    return store
-}
-
-const wrapper = createWrapper(configureStore, {
-    debug: process.env.NODE_ENV === 'development'
-})
-
-export default wrapper
+export const wrapper = createWrapper(makeStore, {
+  debug: process.env.NODE_ENV !== "production",
+});
